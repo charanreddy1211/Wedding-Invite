@@ -52,10 +52,11 @@ export default function App() {
   }, []);
 
   /* ================= COUNTDOWN ================= */
-  const weddingDate = new Date("2026-03-07T18:00:00");
+  
   const [timeLeft, setTimeLeft] = useState({});
 
   useEffect(() => {
+    const weddingDate = new Date("2026-03-07T18:00:00");
     const timer = setInterval(() => {
       const now = new Date();
       const diff = weddingDate - now;
