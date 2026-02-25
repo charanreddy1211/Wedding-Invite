@@ -52,7 +52,6 @@ export default function App() {
   }, []);
 
   /* ================= COUNTDOWN ================= */
-  
   const [timeLeft, setTimeLeft] = useState({});
 
   useEffect(() => {
@@ -129,18 +128,15 @@ export default function App() {
   const quoteStarted = useRef(false);
 
   /* ================= FIXED PHOTO REVEAL ================= */
-  // The scroll container sits in normal flow; we use its scroll position
-  // to drive: 0→1 = photo reveals (clip-path opens up), stays at 1 while
-  // events-timeline slides on top from below.
   const photoContainerRef = useRef(null);
-  const [photoReveal, setPhotoReveal] = useState(0); // 0 = hidden, 1 = fully revealed
+  const [photoReveal, setPhotoReveal] = useState(0);
 
-  // Events timeline scroll state
+  /* ================= EVENTS TIMELINE ================= */
   const [etHeaderVisible, setEtHeaderVisible] = useState(false);
   const [etItemsVisible, setEtItemsVisible] = useState([false, false, false, false]);
   const etStarted = useRef(false);
 
-  // "Hope to See You" section
+  /* ================= HOPE SECTION ================= */
   const [hopeVisible, setHopeVisible] = useState(false);
   const hopeStarted = useRef(false);
 
@@ -148,26 +144,19 @@ export default function App() {
     const onScroll = () => {
       const wh = window.innerHeight;
 
-      // ---- Quote popup ----
       const qEl = document.getElementById("quote-section");
       if (qEl && !quoteStarted.current && qEl.getBoundingClientRect().top < wh * 0.72) {
         quoteStarted.current = true;
         setTimeout(() => setQuoteVisible(true), 100);
       }
 
-      // ---- Photo reveal ----
-      // Progress 0→1 as the scroll container (100vh) scrolls through the viewport.
-      // Starts the moment quote section bottom leaves the screen.
       const pc = photoContainerRef.current;
       if (pc) {
         const rect = pc.getBoundingClientRect();
-        // rect.top goes from +windowHeight (just entered) to -100vh (exited)
-        // We want 0 when top=windowHeight, 1 when top=0
         const progress = Math.min(1, Math.max(0, (wh - rect.top) / wh));
         setPhotoReveal(progress);
       }
 
-      // ---- Events timeline ----
       const etEl = document.getElementById("events-timeline");
       if (etEl && !etStarted.current && etEl.getBoundingClientRect().top < wh * 0.8) {
         etStarted.current = true;
@@ -183,7 +172,6 @@ export default function App() {
         });
       }
 
-      // ---- Hope to See You ----
       const hopeEl = document.getElementById("hope-section");
       if (hopeEl && !hopeStarted.current && hopeEl.getBoundingClientRect().top < wh * 0.8) {
         hopeStarted.current = true;
@@ -199,11 +187,12 @@ export default function App() {
   const styles = `
 @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Playfair+Display:wght@400;600&family=Great+Vibes&family=Dancing+Script:wght@700&display=swap');
 
-body{margin:0;background:#050302;color:#fff;font-family:'Playfair Display',serif}
-html{scroll-behavior:smooth}
+*{box-sizing:border-box;}
+body{margin:0;background:#050302;color:#fff;font-family:'Playfair Display',serif;overflow-x:hidden;}
+html{scroll-behavior:smooth;overflow-x:hidden;}
 
 /* PETALS */
-#petal-layer{position:fixed;inset:0;pointer-events:none;z-index:6}
+#petal-layer{position:fixed;inset:0;pointer-events:none;z-index:6;}
 .petal{
   width:12px;height:12px;position:absolute;
   background:radial-gradient(circle,#ffd700,#bfa137);
@@ -212,8 +201,8 @@ html{scroll-behavior:smooth}
 }
 
 /* INTRO VIDEO */
-.video-intro{position:fixed;inset:0;z-index:9999;background:black}
-.video-intro video{width:100%;height:100%;object-fit:cover}
+.video-intro{position:fixed;inset:0;z-index:9999;background:black;}
+.video-intro video{width:100%;height:100%;object-fit:cover;}
 
 .sound-overlay{
   position:absolute;inset:0;
@@ -221,14 +210,17 @@ html{scroll-behavior:smooth}
   display:flex;flex-direction:column;
   justify-content:center;align-items:center;
   color:white;cursor:pointer;
+  padding:20px;
+  text-align:center;
 }
 
 .sound-btn{
   margin-top:20px;border:2px solid gold;
   padding:14px 28px;border-radius:40px;
-  display:flex;gap:10px;
+  display:flex;gap:10px;align-items:center;
   font-family:'Cinzel',serif;
   letter-spacing:2px;
+  font-size:14px;
 }
 
 /* HERO */
@@ -238,60 +230,72 @@ html{scroll-behavior:smooth}
    linear-gradient(rgba(0,0,0,.6),rgba(0,0,0,.9)),
    url('/royal-bg.png') center/cover no-repeat;
   display:flex;align-items:center;justify-content:center;
-  padding:40px;text-align:center;
-  position: relative;
-  z-index: 5;
+  padding:20px;text-align:center;
+  position:relative;
+  z-index:5;
 }
 
 .glass{
-  backdrop-filter:blur(14px);background:rgba(0,0,0,.55);
-  border:1px solid rgba(255,215,0,.3);border-radius:30px;
-  padding:70px 60px;max-width:1000px;width:100%;text-align:center;color:white;
+  backdrop-filter:blur(14px);
+  background:rgba(0,0,0,.55);
+  border:1px solid rgba(255,215,0,.3);
+  border-radius:30px;
+  padding:50px 40px;
+  max-width:1000px;
+  width:100%;
+  text-align:center;
+  color:white;
 }
 
-.we{letter-spacing:4px;color:#f5d58a;font-family:'Cinzel',serif}
+.we{letter-spacing:4px;color:#f5d58a;font-family:'Cinzel',serif;font-size:13px;margin-bottom:12px;}
 
 .names{
   font-family:'Dancing Script',cursive;
-  font-size:4rem;
+  font-size:clamp(2rem,6vw,4rem);
   font-weight:700;
   background:linear-gradient(45deg,#ffd700,#fff1b8,#ffd700);
-  -webkit-background-clip:text;color:transparent;
+  -webkit-background-clip:text;
+  color:transparent;
   line-height:1.3;
+  margin:10px 0;
 }
+
+.glass > p{font-size:14px;color:rgba(255,255,255,0.8);margin:8px 0 0;}
 
 /* COUNTDOWN */
 .countdown{
   display:grid;
   grid-template-columns:repeat(4,1fr);
-  gap:18px;
-  margin-top:40px;
+  gap:12px;
+  margin-top:30px;
 }
 
 .time{
   background:rgba(255,215,0,.12);
   border:1px solid rgba(255,215,0,.4);
   border-radius:18px;
-  padding:18px;
+  padding:14px 8px;
 }
 
-.time h1{margin:0;color:#ffd700;font-size:32px}
-.time p{margin:0;font-family:'Cinzel',serif;font-size:12px}
+.time h1{margin:0;color:#ffd700;font-size:clamp(20px,4vw,32px);}
+.time p{margin:0;font-family:'Cinzel',serif;font-size:10px;letter-spacing:1px;}
 
-/* EVENTS */
+/* EVENTS (celebrating section) */
 #events{
   background:#f7f4ef;
   color:#111;
-  padding:140px 8%;
-  position: relative;
-  z-index: 5;
+  padding:80px 6%;
+  position:relative;
+  z-index:5;
 }
 
 .events-grid{
   display:grid;
   grid-template-columns:1fr 1fr;
-  gap:80px;
+  gap:60px;
   align-items:center;
+  max-width:1200px;
+  margin:0 auto;
 }
 
 .events-img img{
@@ -303,167 +307,153 @@ html{scroll-behavior:smooth}
 .events-text h2{
   white-space:pre-line;
   font-family:'Cinzel',serif;
-  font-size:36px;
-  margin-bottom:50px;
+  font-size:clamp(22px,3vw,36px);
+  margin-bottom:40px;
 }
 
-.event-item{margin-bottom:40px}
+.event-item{margin-bottom:32px;}
 
 .event-num{
   font-family:'Cinzel',serif;
-  font-size:22px;
+  font-size:18px;
   margin-bottom:6px;
 }
 
 .event-title{
   font-family:'Cinzel',serif;
-  font-size:22px;
-  margin-bottom:10px;
+  font-size:18px;
+  margin-bottom:8px;
 }
 
 .event-desc{
-  font-size:15px;
+  font-size:14px;
   line-height:1.6;
   color:#444;
 }
 
 /* ============ LOVE STORY SECTION ============ */
 #love-story {
-  min-height: 60vh;
-  background: #0d0a06;
-  color: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  overflow: hidden;
-  padding: 70px 8%;
-  z-index: 5;
+  min-height:60vh;
+  background:#0d0a06;
+  color:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  position:relative;
+  overflow:hidden;
+  padding:70px 6%;
+  z-index:5;
 }
 
-/* Ambient glow blobs */
 #love-story::before {
-  content: '';
-  position: absolute;
-  width: 600px;
-  height: 600px;
-  background: radial-gradient(circle, rgba(191,161,55,0.12) 0%, transparent 70%);
-  top: -100px;
-  left: -100px;
-  pointer-events: none;
+  content:'';
+  position:absolute;
+  width:600px;height:600px;
+  background:radial-gradient(circle,rgba(191,161,55,0.12) 0%,transparent 70%);
+  top:-100px;left:-100px;
+  pointer-events:none;
 }
 
 #love-story::after {
-  content: '';
-  position: absolute;
-  width: 500px;
-  height: 500px;
-  background: radial-gradient(circle, rgba(191,100,55,0.08) 0%, transparent 70%);
-  bottom: -80px;
-  right: -80px;
-  pointer-events: none;
+  content:'';
+  position:absolute;
+  width:500px;height:500px;
+  background:radial-gradient(circle,rgba(191,100,55,0.08) 0%,transparent 70%);
+  bottom:-80px;right:-80px;
+  pointer-events:none;
 }
 
 .story-grid {
-  display: grid;
-  grid-template-columns: 1fr 1.4fr;
-  gap: 100px;
-  align-items: center;
-  max-width: 1200px;
-  width: 100%;
-  margin: 0 auto;
-  position: relative;
-  z-index: 1;
+  display:grid;
+  grid-template-columns:1fr 1.4fr;
+  gap:80px;
+  align-items:center;
+  max-width:1200px;
+  width:100%;
+  margin:0 auto;
+  position:relative;
+  z-index:1;
 }
 
-/* LEFT — heading slides in from left */
 .story-heading {
-  opacity: 0;
-  transform: translateX(-70px);
-  transition: opacity 1s ease, transform 1s ease;
+  opacity:0;
+  transform:translateX(-70px);
+  transition:opacity 1s ease,transform 1s ease;
 }
 
 .story-heading.visible {
-  opacity: 1;
-  transform: translateX(0);
+  opacity:1;
+  transform:translateX(0);
 }
 
 .story-heading h2 {
-  font-family: 'Cinzel', serif;
-  font-size: clamp(28px, 3.5vw, 46px);
-  font-weight: 400;
-  line-height: 1.35;
-  letter-spacing: 3px;
-  color: #fff;
-  margin: 0;
-  position: relative;
+  font-family:'Cinzel',serif;
+  font-size:clamp(24px,3.5vw,46px);
+  font-weight:400;
+  line-height:1.35;
+  letter-spacing:3px;
+  color:#fff;
+  margin:0;
 }
 
 .story-heading h2 span {
-  display: block;
-  font-family: 'Great Vibes', cursive;
-  font-size: clamp(40px, 5vw, 66px);
-  background: linear-gradient(135deg, #ffd700, #bfa137, #ffe57a);
-  -webkit-background-clip: text;
-  color: transparent;
-  letter-spacing: 2px;
-  margin-top: 10px;
+  display:block;
+  font-family:'Great Vibes',cursive;
+  font-size:clamp(36px,5vw,66px);
+  background:linear-gradient(135deg,#ffd700,#bfa137,#ffe57a);
+  -webkit-background-clip:text;
+  color:transparent;
+  letter-spacing:2px;
+  margin-top:10px;
 }
 
 .story-heading h2::after {
-  content: '';
-  display: block;
-  width: 0px;
-  height: 1px;
-  background: linear-gradient(90deg, #ffd700, transparent);
-  margin-top: 32px;
-  transition: width 1.4s ease 0.8s;
+  content:'';
+  display:block;
+  width:0px;height:1px;
+  background:linear-gradient(90deg,#ffd700,transparent);
+  margin-top:32px;
+  transition:width 1.4s ease 0.8s;
 }
 
-.story-heading.visible h2::after {
-  width: 120px;
-}
+.story-heading.visible h2::after { width:120px; }
 
-/* RIGHT — text fades in from right with delay */
 .story-text {
-  opacity: 0;
-  transform: translateX(70px);
-  transition: opacity 1s ease 0.4s, transform 1s ease 0.4s;
-  border-left: 1px solid rgba(255, 215, 0, 0.2);
-  padding-left: 50px;
+  opacity:0;
+  transform:translateX(70px);
+  transition:opacity 1s ease 0.4s,transform 1s ease 0.4s;
+  border-left:1px solid rgba(255,215,0,0.2);
+  padding-left:50px;
 }
 
 .story-text.visible {
-  opacity: 1;
-  transform: translateX(0);
+  opacity:1;
+  transform:translateX(0);
 }
 
-/* Decorative quote mark */
 .story-text::before {
-  content: '\u201C';
-  font-family: 'Great Vibes', cursive;
-  font-size: 100px;
-  background: linear-gradient(135deg, #ffd700, #bfa137);
-  -webkit-background-clip: text;
-  color: transparent;
-  line-height: 0.6;
-  display: block;
-  margin-bottom: 30px;
-  opacity: 0;
-  transition: opacity 1s ease 0.9s;
+  content:'\u201C';
+  font-family:'Great Vibes',cursive;
+  font-size:100px;
+  background:linear-gradient(135deg,#ffd700,#bfa137);
+  -webkit-background-clip:text;
+  color:transparent;
+  line-height:0.6;
+  display:block;
+  margin-bottom:30px;
+  opacity:0;
+  transition:opacity 1s ease 0.9s;
 }
 
-.story-text.visible::before {
-  opacity: 1;
-}
+.story-text.visible::before { opacity:1; }
 
 .story-text p {
-  font-family: 'Playfair Display', serif;
-  font-size: clamp(15px, 1.4vw, 18px);
-  line-height: 2.1;
-  color: #c8b99a;
-  margin: 0;
-  text-align: left;
+  font-family:'Playfair Display',serif;
+  font-size:clamp(14px,1.4vw,18px);
+  line-height:2.1;
+  color:#c8b99a;
+  margin:0;
+  text-align:left;
 }
 
 /* FOOTER */
@@ -471,398 +461,424 @@ html{scroll-behavior:smooth}
   background:#050302;
   color:#d6c27a;
   text-align:center;
-  padding:60px;
+  padding:50px 20px;
   font-family:'Cinzel',serif;
-  position: relative;
-  z-index: 5;
+  font-size:14px;
+  position:relative;
+  z-index:5;
 }
 
 /* ============ QUOTE SECTION ============ */
-/* Solid white background so it covers the fixed photo completely */
 #quote-section {
-  background: #fff;
-  padding: 80px 10%;
-  text-align: center;
-  position: relative;
-  z-index: 5;
-  min-height: unset;
+  background:#fff;
+  padding:70px 8%;
+  text-align:center;
+  position:relative;
+  z-index:5;
 }
 
 .quote-inner {
-  opacity: 0;
-  transform: translateY(50px);
-  transition: opacity 1.1s ease, transform 1.1s ease;
-  max-width: 820px;
-  margin: 0 auto;
+  opacity:0;
+  transform:translateY(50px);
+  transition:opacity 1.1s ease,transform 1.1s ease;
+  max-width:820px;
+  margin:0 auto;
 }
 
 .quote-inner.visible {
-  opacity: 1;
-  transform: translateY(0);
+  opacity:1;
+  transform:translateY(0);
 }
 
 .quote-inner blockquote {
-  font-family: 'Cinzel', serif;
-  font-size: clamp(17px, 2.4vw, 26px);
-  font-weight: 400;
-  line-height: 1.7;
-  color: #1a1a1a;
-  letter-spacing: 1.5px;
-  margin: 0 0 28px 0;
+  font-family:'Cinzel',serif;
+  font-size:clamp(15px,2.4vw,26px);
+  font-weight:400;
+  line-height:1.7;
+  color:#1a1a1a;
+  letter-spacing:1.5px;
+  margin:0 0 24px 0;
 }
 
 .quote-inner cite {
-  font-family: 'Playfair Display', serif;
-  font-size: 15px;
-  color: #999;
-  font-style: normal;
-  letter-spacing: 3px;
-  text-transform: uppercase;
+  font-family:'Playfair Display',serif;
+  font-size:14px;
+  color:#999;
+  font-style:normal;
+  letter-spacing:3px;
+  text-transform:uppercase;
 }
 
-/*
-  ============ FIXED PHOTO SYSTEM ============
-
-  - #photo-fixed is position:fixed, z-index:1 — always behind all solid sections
-  - Quote section (z-index:4, solid white) sits above it — you don't see photo there
-  - #photo-scroll-container is a transparent 200vh spacer after the quote section
-    While you scroll through it, the fixed photo is visible (nothing covering it)
-    The clip-path on the photo goes from inset(100% 0 0 0) → inset(0 0 0 0)
-    creating a "rising up from bottom" reveal effect
-  - Events-timeline (z-index:4, solid background) slides up and covers photo
-*/
-
+/* ============ FIXED PHOTO SYSTEM ============ */
 #photo-fixed {
-  position: fixed;
-  inset: 0;
-  z-index: 3;
-  pointer-events: none;
-  background: transparent;
+  position:fixed;
+  inset:0;
+  z-index:3;
+  pointer-events:none;
+  background:transparent;
 }
 
 #photo-fixed img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center;
-  display: block;
-  will-change: clip-path, filter;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  object-position:center;
+  display:block;
+  will-change:clip-path,filter;
 }
 
-/* White spacer sits BELOW the fixed photo (z-index:2 < photo z-index:3)
-   So the white shows at the edges/before photo reveals,
-   and the photo rises over it via clip-path */
 #photo-scroll-container {
-  position: relative;
-  height: 100vh;
-  z-index: 2;
-  pointer-events: none;
-  background: #fff;
+  position:relative;
+  height:100vh;
+  z-index:2;
+  pointer-events:none;
+  background:#fff;
 }
 
-/* Events timeline slides ON TOP of the fixed photo */
+/* ============ EVENTS TIMELINE ============ */
 #events-timeline {
-  position: relative;
-  z-index: 5;
-  background: #faf7f2;
-  padding: 120px 8%;
-  overflow: hidden;
+  position:relative;
+  z-index:5;
+  background:#faf7f2;
+  padding:80px 6%;
+  overflow:hidden;
 }
 
 .et-header {
-  text-align: center;
-  margin-bottom: 90px;
-  opacity: 0;
-  transform: translateY(40px);
-  transition: opacity 0.9s ease, transform 0.9s ease;
+  text-align:center;
+  margin-bottom:70px;
+  opacity:0;
+  transform:translateY(40px);
+  transition:opacity 0.9s ease,transform 0.9s ease;
 }
 
 .et-header.visible {
-  opacity: 1;
-  transform: translateY(0);
+  opacity:1;
+  transform:translateY(0);
 }
 
 .et-header p {
-  font-family: 'Great Vibes', cursive;
-  font-size: 28px;
-  color: #bfa137;
-  margin: 0 0 10px 0;
-  letter-spacing: 1px;
+  font-family:'Great Vibes',cursive;
+  font-size:clamp(22px,3vw,28px);
+  color:#bfa137;
+  margin:0 0 10px 0;
 }
 
 .et-header h2 {
-  font-family: 'Cinzel', serif;
-  font-size: clamp(28px, 4vw, 48px);
-  font-weight: 400;
-  letter-spacing: 5px;
-  color: #1a1a1a;
-  margin: 0;
+  font-family:'Cinzel',serif;
+  font-size:clamp(22px,4vw,48px);
+  font-weight:400;
+  letter-spacing:4px;
+  color:#1a1a1a;
+  margin:0;
 }
 
 .et-header h2::after {
-  content: '';
-  display: block;
-  width: 60px;
-  height: 2px;
-  background: linear-gradient(90deg, transparent, #bfa137, transparent);
-  margin: 24px auto 0;
+  content:'';
+  display:block;
+  width:60px;height:2px;
+  background:linear-gradient(90deg,transparent,#bfa137,transparent);
+  margin:20px auto 0;
 }
 
-/* Timeline container */
 .et-list {
-  max-width: 900px;
-  margin: 0 auto;
-  position: relative;
+  max-width:900px;
+  margin:0 auto;
+  position:relative;
 }
 
-/* Vertical line */
 .et-list::before {
-  content: '';
-  position: absolute;
-  left: 50%;
-  top: 0;
-  bottom: 0;
-  width: 1px;
-  background: linear-gradient(to bottom, transparent, #d4b86a 10%, #d4b86a 90%, transparent);
-  transform: translateX(-50%);
+  content:'';
+  position:absolute;
+  left:50%;top:0;bottom:0;width:1px;
+  background:linear-gradient(to bottom,transparent,#d4b86a 10%,#d4b86a 90%,transparent);
+  transform:translateX(-50%);
 }
 
-/* Each event card */
 .et-item {
-  display: grid;
-  grid-template-columns: 1fr 60px 1fr;
-  gap: 0;
-  align-items: start;
-  margin-bottom: 70px;
-  opacity: 0;
-  transform: translateY(40px);
-  transition: opacity 0.8s ease, transform 0.8s ease;
+  display:grid;
+  grid-template-columns:1fr 60px 1fr;
+  gap:0;
+  align-items:start;
+  margin-bottom:60px;
+  opacity:0;
+  transform:translateY(40px);
+  transition:opacity 0.8s ease,transform 0.8s ease;
 }
 
 .et-item.visible {
-  opacity: 1;
-  transform: translateY(0);
+  opacity:1;
+  transform:translateY(0);
 }
 
-/* Alternating: odd → card on left, even → card on right */
-.et-item:nth-child(odd) .et-card  { grid-column: 1; grid-row: 1; text-align: right; }
-.et-item:nth-child(odd) .et-dot   { grid-column: 2; grid-row: 1; }
-.et-item:nth-child(odd) .et-empty { grid-column: 3; grid-row: 1; }
-
-.et-item:nth-child(even) .et-empty { grid-column: 1; grid-row: 1; }
-.et-item:nth-child(even) .et-dot   { grid-column: 2; grid-row: 1; }
-.et-item:nth-child(even) .et-card  { grid-column: 3; grid-row: 1; text-align: left; }
+.et-item:nth-child(odd) .et-card  { grid-column:1;grid-row:1;text-align:right; }
+.et-item:nth-child(odd) .et-dot   { grid-column:2;grid-row:1; }
+.et-item:nth-child(odd) .et-empty { grid-column:3;grid-row:1; }
+.et-item:nth-child(even) .et-empty { grid-column:1;grid-row:1; }
+.et-item:nth-child(even) .et-dot   { grid-column:2;grid-row:1; }
+.et-item:nth-child(even) .et-card  { grid-column:3;grid-row:1;text-align:left; }
 
 .et-dot {
-  display: flex;
-  align-items: flex-start;
-  justify-content: center;
-  padding-top: 18px;
+  display:flex;align-items:flex-start;
+  justify-content:center;padding-top:18px;
 }
 
 .et-dot-inner {
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  background: #ffd700;
-  border: 3px solid #fff;
-  box-shadow: 0 0 0 2px #bfa137, 0 0 20px rgba(255,215,0,0.4);
-  flex-shrink: 0;
+  width:16px;height:16px;
+  border-radius:50%;
+  background:#ffd700;
+  border:3px solid #fff;
+  box-shadow:0 0 0 2px #bfa137,0 0 20px rgba(255,215,0,0.4);
+  flex-shrink:0;
 }
 
 .et-card {
-  background: #fff;
-  border: 1px solid rgba(191,161,55,0.2);
-  border-radius: 16px;
-  padding: 28px 32px;
-  box-shadow: 0 4px 30px rgba(0,0,0,0.06);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  background:#fff;
+  border:1px solid rgba(191,161,55,0.2);
+  border-radius:16px;
+  padding:24px 28px;
+  box-shadow:0 4px 30px rgba(0,0,0,0.06);
+  transition:transform 0.3s ease,box-shadow 0.3s ease;
 }
 
 .et-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 12px 40px rgba(191,161,55,0.15);
+  transform:translateY(-4px);
+  box-shadow:0 12px 40px rgba(191,161,55,0.15);
 }
 
 .et-num {
-  font-family: 'Cinzel', serif;
-  font-size: 11px;
-  letter-spacing: 3px;
-  color: #bfa137;
-  text-transform: uppercase;
-  margin-bottom: 8px;
+  font-family:'Cinzel',serif;
+  font-size:11px;
+  letter-spacing:3px;
+  color:#bfa137;
+  text-transform:uppercase;
+  margin-bottom:8px;
 }
 
 .et-title {
-  font-family: 'Cinzel', serif;
-  font-size: 20px;
-  font-weight: 600;
-  color: #1a1a1a;
-  margin-bottom: 12px;
+  font-family:'Cinzel',serif;
+  font-size:18px;
+  font-weight:600;
+  color:#1a1a1a;
+  margin-bottom:10px;
 }
 
 .et-datetime {
-  font-family: 'Playfair Display', serif;
-  font-size: 14px;
-  color: #555;
-  margin-bottom: 8px;
-  line-height: 1.6;
+  font-family:'Playfair Display',serif;
+  font-size:13px;
+  color:#555;
+  margin-bottom:8px;
+  line-height:1.6;
 }
 
 .et-datetime strong {
-  display: block;
-  color: #333;
-  font-weight: 600;
+  display:block;color:#333;font-weight:600;
 }
 
 .et-location {
-  font-family: 'Playfair Display', serif;
-  font-size: 13px;
-  color: #777;
-  margin-bottom: 18px;
-  line-height: 1.5;
+  font-family:'Playfair Display',serif;
+  font-size:13px;
+  color:#777;
+  margin-bottom:16px;
+  line-height:1.5;
 }
 
 .et-map-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  background: linear-gradient(135deg, #1a1a1a, #333);
-  color: #ffd700;
-  text-decoration: none;
-  font-family: 'Cinzel', serif;
-  font-size: 11px;
-  letter-spacing: 2px;
-  padding: 10px 20px;
-  border-radius: 30px;
-  border: 1px solid rgba(255,215,0,0.3);
-  transition: background 0.3s ease, transform 0.2s ease;
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  background:linear-gradient(135deg,#1a1a1a,#333);
+  color:#ffd700;
+  text-decoration:none;
+  font-family:'Cinzel',serif;
+  font-size:11px;
+  letter-spacing:2px;
+  padding:10px 18px;
+  border-radius:30px;
+  border:1px solid rgba(255,215,0,0.3);
+  transition:background 0.3s ease,transform 0.2s ease;
 }
 
 .et-map-btn:hover {
-  background: linear-gradient(135deg, #ffd700, #bfa137);
-  color: #1a1a1a;
-  transform: scale(1.04);
+  background:linear-gradient(135deg,#ffd700,#bfa137);
+  color:#1a1a1a;
+  transform:scale(1.04);
 }
 
-.et-map-btn svg {
-  width: 14px;
-  height: 14px;
-  fill: currentColor;
-}
+.et-map-btn svg { width:14px;height:14px;fill:currentColor; }
 
-/* ============ HOPE TO SEE YOU SECTION ============ */
+/* ============ HOPE SECTION ============ */
 #hope-section {
-  background: #0d0a06;
-  min-height: 60vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  padding: 100px 8%;
-  position: relative;
-  z-index: 5;
-  overflow: hidden;
+  background:#0d0a06;
+  min-height:60vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  padding:80px 6%;
+  position:relative;
+  z-index:5;
+  overflow:hidden;
 }
 
 #hope-section::before {
-  content: '';
-  position: absolute;
-  width: 700px;
-  height: 700px;
-  background: radial-gradient(circle, rgba(191,161,55,0.1) 0%, transparent 65%);
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  pointer-events: none;
+  content:'';
+  position:absolute;
+  width:700px;height:700px;
+  background:radial-gradient(circle,rgba(191,161,55,0.1) 0%,transparent 65%);
+  top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  pointer-events:none;
 }
 
 .hope-inner {
-  position: relative;
-  z-index: 1;
-  opacity: 0;
-  transform: translateY(60px) scale(0.96);
-  transition: opacity 1.2s ease, transform 1.2s ease;
+  position:relative;z-index:1;
+  opacity:0;
+  transform:translateY(60px) scale(0.96);
+  transition:opacity 1.2s ease,transform 1.2s ease;
 }
 
 .hope-inner.visible {
-  opacity: 1;
-  transform: translateY(0) scale(1);
+  opacity:1;
+  transform:translateY(0) scale(1);
 }
 
 .hope-pre {
-  font-family: 'Great Vibes', cursive;
-  font-size: clamp(22px, 3vw, 36px);
-  color: #bfa137;
-  display: block;
-  margin-bottom: 16px;
-  opacity: 0;
-  transform: translateY(20px);
-  transition: opacity 0.9s ease 0.3s, transform 0.9s ease 0.3s;
+  font-family:'Great Vibes',cursive;
+  font-size:clamp(20px,3vw,36px);
+  color:#bfa137;
+  display:block;
+  margin-bottom:16px;
+  opacity:0;
+  transform:translateY(20px);
+  transition:opacity 0.9s ease 0.3s,transform 0.9s ease 0.3s;
 }
 
-.hope-inner.visible .hope-pre {
-  opacity: 1;
-  transform: translateY(0);
-}
+.hope-inner.visible .hope-pre { opacity:1;transform:translateY(0); }
 
 .hope-title {
-  font-family: 'Cinzel', serif;
-  font-size: clamp(36px, 7vw, 90px);
-  font-weight: 400;
-  letter-spacing: 6px;
-  background: linear-gradient(135deg, #ffd700, #fff6c0, #ffd700);
-  -webkit-background-clip: text;
-  color: transparent;
-  line-height: 1.15;
-  margin: 0 0 32px 0;
-  opacity: 0;
-  transform: translateY(30px);
-  transition: opacity 1s ease 0.5s, transform 1s ease 0.5s;
+  font-family:'Cinzel',serif;
+  font-size:clamp(30px,7vw,90px);
+  font-weight:400;
+  letter-spacing:4px;
+  background:linear-gradient(135deg,#ffd700,#fff6c0,#ffd700);
+  -webkit-background-clip:text;
+  color:transparent;
+  line-height:1.15;
+  margin:0 0 28px 0;
+  opacity:0;
+  transform:translateY(30px);
+  transition:opacity 1s ease 0.5s,transform 1s ease 0.5s;
 }
 
-.hope-inner.visible .hope-title {
-  opacity: 1;
-  transform: translateY(0);
-}
+.hope-inner.visible .hope-title { opacity:1;transform:translateY(0); }
 
 .hope-sub {
-  font-family: 'Playfair Display', serif;
-  font-size: clamp(14px, 1.6vw, 18px);
-  color: #9a8a6a;
-  letter-spacing: 3px;
-  text-transform: uppercase;
-  opacity: 0;
-  transition: opacity 0.9s ease 0.9s;
+  font-family:'Playfair Display',serif;
+  font-size:clamp(12px,1.6vw,18px);
+  color:#9a8a6a;
+  letter-spacing:2px;
+  text-transform:uppercase;
+  opacity:0;
+  transition:opacity 0.9s ease 0.9s;
 }
 
-.hope-inner.visible .hope-sub {
-  opacity: 1;
-}
+.hope-inner.visible .hope-sub { opacity:1; }
 
 .hope-divider {
-  width: 0;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, #bfa137, transparent);
-  margin: 28px auto;
-  transition: width 1.4s ease 0.7s;
+  width:0;height:1px;
+  background:linear-gradient(90deg,transparent,#bfa137,transparent);
+  margin:24px auto;
+  transition:width 1.4s ease 0.7s;
 }
 
-.hope-inner.visible .hope-divider {
-  width: 200px;
+.hope-inner.visible .hope-divider { width:180px; }
+
+/* ============ MOBILE RESPONSIVE ============ */
+@media(max-width:768px){
+
+  /* HERO */
+  .glass{padding:36px 20px;border-radius:20px;}
+  .we{font-size:10px;letter-spacing:2px;}
+  .names{font-size:clamp(1.8rem,8vw,2.6rem);}
+  .glass > p{font-size:12px;}
+  .countdown{grid-template-columns:repeat(2,1fr);gap:10px;margin-top:24px;}
+  .time{padding:12px 6px;border-radius:14px;}
+  .time h1{font-size:24px;}
+  .time p{font-size:9px;}
+
+  /* EVENTS (celebrating) */
+  #events{padding:60px 5%;}
+  .events-grid{grid-template-columns:1fr;gap:30px;}
+  .events-text h2{font-size:22px;margin-bottom:28px;}
+  .event-num,.event-title{font-size:16px;}
+  .event-desc{font-size:13px;}
+
+  /* LOVE STORY */
+  #love-story{padding:60px 5%;min-height:unset;}
+  .story-grid{grid-template-columns:1fr;gap:36px;}
+  .story-heading h2{font-size:24px;letter-spacing:2px;}
+  .story-heading h2 span{font-size:36px;}
+  .story-text{
+    border-left:none;padding-left:0;
+    border-top:1px solid rgba(255,215,0,0.2);
+    padding-top:28px;
+  }
+  .story-text::before{font-size:70px;}
+  .story-text p{font-size:14px;line-height:1.9;}
+
+  /* QUOTE */
+  #quote-section{padding:50px 5%;}
+  .quote-inner blockquote{font-size:15px;letter-spacing:1px;line-height:1.6;}
+  .quote-inner cite{font-size:11px;letter-spacing:2px;}
+
+  /* EVENTS TIMELINE */
+  #events-timeline{padding:60px 4%;}
+  .et-header{margin-bottom:50px;}
+  .et-header p{font-size:20px;}
+  .et-header h2{font-size:22px;letter-spacing:2px;}
+  .et-list::before{left:18px;transform:none;}
+  .et-item{
+    grid-template-columns:40px 1fr !important;
+    margin-bottom:32px;
+  }
+  .et-item .et-dot{
+    grid-column:1 !important;grid-row:1 !important;
+    padding-top:16px;
+  }
+  .et-item .et-card{
+    grid-column:2 !important;grid-row:1 !important;
+    text-align:left !important;
+    padding:16px 14px;
+  }
+  .et-item .et-empty{display:none !important;}
+  .et-dot-inner{width:12px;height:12px;}
+  .et-title{font-size:15px;margin-bottom:8px;}
+  .et-datetime{font-size:12px;}
+  .et-location{font-size:12px;margin-bottom:12px;}
+  .et-map-btn{font-size:10px;padding:8px 14px;letter-spacing:1px;}
+
+  /* HOPE */
+  #hope-section{padding:60px 5%;min-height:50vh;}
+  .hope-title{font-size:clamp(26px,8vw,48px);letter-spacing:2px;}
+  .hope-pre{font-size:20px;}
+  .hope-sub{font-size:11px;letter-spacing:1.5px;}
+  .hope-divider{margin:18px auto;}
+
+  /* FOOTER */
+  .footer{padding:36px 5%;font-size:13px;}
+
+  /* SOUND OVERLAY */
+  .sound-overlay h2{font-size:18px;}
+  .sound-btn{font-size:12px;padding:12px 20px;}
 }
 
-@media(max-width:900px){
-  .events-grid{grid-template-columns:1fr}
-  .story-grid{grid-template-columns:1fr;gap:60px}
-  .names{font-size:3.5rem}
-  .story-text{border-left:none;padding-left:0;border-top:1px solid rgba(255,215,0,0.2);padding-top:40px}
-  .quote-inner blockquote{font-size:16px}
-  .et-list::before{left:24px}
-  .et-item{grid-template-columns:48px 1fr !important}
-  .et-item .et-dot{grid-column:1 !important;grid-row:1 !important;padding-top:22px}
-  .et-item .et-card{grid-column:2 !important;grid-row:1 !important;text-align:left !important}
-  .et-item .et-empty{display:none}
+@media(max-width:380px){
+  .names{font-size:1.6rem;}
+  .time h1{font-size:20px;}
+  .et-card{padding:14px 12px;}
+  .et-title{font-size:14px;}
+  .hope-title{font-size:26px;}
 }
 `;
 
@@ -907,7 +923,7 @@ html{scroll-behavior:smooth}
           <section className="hero">
             <div className="glass">
               <p className="we">WE ARE GETTING MARRIED</p>
-              <h1 className="names">Anvesh Kumar Reddy & Poojitha</h1>
+              <h1 className="names">Anvesh Kumar Reddy<br />& <br />Poojitha</h1>
               <p>7 March 2026 · Ongole, Andhra Pradesh</p>
 
               <div className="countdown">
@@ -946,7 +962,7 @@ html{scroll-behavior:smooth}
                       <div className="event-num">Dinner</div>
                       <div className="event-title">Saturday, Mar 7, 2026</div>
                       <div className="event-desc">
-                        at 8-00 PM onwards
+                        at 8:00 PM onwards
                       </div>
                     </div>
                   </>
@@ -958,7 +974,6 @@ html{scroll-behavior:smooth}
           {/* ============ LOVE STORY SECTION ============ */}
           <section id="love-story">
             <div className="story-grid">
-              {/* LEFT — heading */}
               <div className={`story-heading${storyVisible ? " visible" : ""}`}>
                 <h2>
                   Not Just an<br />
@@ -966,19 +981,16 @@ html{scroll-behavior:smooth}
                 </h2>
               </div>
 
-              {/* RIGHT — story text */}
               <div className={`story-text${storyVisible ? " visible" : ""}`}>
                 <p>
                   What began as a simple conversation turned into a beautiful journey.
-            Two hearts met, and destiny quietly wrote our forever.
+                  Two hearts met, and destiny quietly wrote our forever.
                 </p>
               </div>
             </div>
           </section>
 
-          {/* ============ QUOTE SECTION ============
-               Solid white background covers the fixed photo.
-               Quote text pops in when scrolled to. */}
+          {/* ============ QUOTE SECTION ============ */}
           <section id="quote-section">
             <div className={`quote-inner${quoteVisible ? " visible" : ""}`}>
               <blockquote>
@@ -989,10 +1001,7 @@ html{scroll-behavior:smooth}
             </div>
           </section>
 
-          {/* ============ FIXED PHOTO — behind everything at z-index:1 ============
-               clip-path: inset(X% 0 0 0) — X goes 100→0 as you scroll,
-               so the photo "rises up" from the bottom into full view.
-               After full reveal, the Events section (z-index:4, solid bg) scrolls over it. */}
+          {/* ============ FIXED PHOTO ============ */}
           <div id="photo-fixed">
             <img
               src="/wedding-photo.png"
@@ -1004,10 +1013,7 @@ html{scroll-behavior:smooth}
             />
           </div>
 
-          {/* ============ PHOTO SCROLL CONTAINER ============
-               Transparent 200vh spacer — sits in normal flow after quote section.
-               As you scroll through it, photoReveal goes 0→1 driving the reveal.
-               Nothing visually here — the fixed photo shows through. */}
+          {/* ============ PHOTO SCROLL CONTAINER ============ */}
           <div id="photo-scroll-container" ref={photoContainerRef} />
 
           {/* ============ EVENTS TIMELINE SECTION ============ */}
@@ -1053,7 +1059,6 @@ html{scroll-behavior:smooth}
                 },
               ].map((ev, i) => (
                 <div key={i} className={`et-item${etItemsVisible[i] ? " visible" : ""}`}>
-                  {/* Left side / empty placeholder for even */}
                   {i % 2 === 0 ? (
                     <div className="et-card">
                       <div className="et-num">Event {ev.num}</div>
@@ -1072,10 +1077,8 @@ html{scroll-behavior:smooth}
                     <div className="et-empty"></div>
                   )}
 
-                  {/* Center dot */}
                   <div className="et-dot"><div className="et-dot-inner"></div></div>
 
-                  {/* Right side / empty placeholder for odd */}
                   {i % 2 !== 0 ? (
                     <div className="et-card">
                       <div className="et-num">Event {ev.num}</div>
