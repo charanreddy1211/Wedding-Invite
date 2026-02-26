@@ -80,7 +80,7 @@ export default function App() {
     };
     window.addEventListener("scroll", onScroll);
     return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+  }, [title]);
 
   /* ================= LOVE STORY ================= */
   const [storyVisible, setStoryVisible] = useState(false);
@@ -98,7 +98,7 @@ export default function App() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  /* ================= QUOTE / PHOTO / TIMELINE / HOPE / RSVP ================= */
+  /* ================= SCROLL ANIMATIONS ================= */
   const [quoteVisible, setQuoteVisible] = useState(false);
   const quoteStarted = useRef(false);
   const photoContainerRef = useRef(null);
@@ -108,43 +108,41 @@ export default function App() {
   const etStarted = useRef(false);
   const [hopeVisible, setHopeVisible] = useState(false);
   const hopeStarted = useRef(false);
-  const [rsvpVisible, setRsvpVisible] = useState(false);
-  const rsvpStarted = useRef(false);
 
   useEffect(() => {
     const onScroll = () => {
       const wh = window.innerHeight;
+
       const qEl = document.getElementById("quote-section");
       if (qEl && !quoteStarted.current && qEl.getBoundingClientRect().top < wh * 0.72) {
         quoteStarted.current = true;
         setTimeout(() => setQuoteVisible(true), 100);
       }
+
       const pc = photoContainerRef.current;
       if (pc) {
         const rect = pc.getBoundingClientRect();
         setPhotoReveal(Math.min(1, Math.max(0, (wh - rect.top) / wh)));
       }
+
       const etEl = document.getElementById("events-timeline");
       if (etEl && !etStarted.current && etEl.getBoundingClientRect().top < wh * 0.8) {
         etStarted.current = true;
         setTimeout(() => setEtHeaderVisible(true), 100);
-        [0,1,2,3].forEach((i) => {
+        [0, 1, 2, 3].forEach((i) => {
           setTimeout(() => {
-            setEtItemsVisible((prev) => { const next=[...prev]; next[i]=true; return next; });
+            setEtItemsVisible((prev) => { const next = [...prev]; next[i] = true; return next; });
           }, 400 + i * 250);
         });
       }
+
       const hopeEl = document.getElementById("hope-section");
       if (hopeEl && !hopeStarted.current && hopeEl.getBoundingClientRect().top < wh * 0.8) {
         hopeStarted.current = true;
         setTimeout(() => setHopeVisible(true), 100);
       }
-      const rsvpEl = document.getElementById("rsvp-section");
-      if (rsvpEl && !rsvpStarted.current && rsvpEl.getBoundingClientRect().top < wh * 0.85) {
-        rsvpStarted.current = true;
-        setTimeout(() => setRsvpVisible(true), 100);
-      }
     };
+
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
@@ -152,7 +150,7 @@ export default function App() {
   /* ================= RSVP ================= */
   const [rsvpOpen, setRsvpOpen] = useState(false);
   const [rsvpForm, setRsvpForm] = useState({
-    name: "", phone: "", attending: "yes", guests: "1", date: "Mar 7", message: ""
+    name: "", phone: "", guests: "1", date: "Mar 7", message: ""
   });
   const [rsvpStatus, setRsvpStatus] = useState("idle");
 
@@ -171,8 +169,8 @@ export default function App() {
         body: JSON.stringify({ ...rsvpForm, submittedAt }),
       });
       setRsvpStatus("success");
-      setRsvpForm({ name: "", phone: "", attending: "yes", guests: "1", date: "Mar 7", message: "" });
-    } catch {
+      setRsvpForm({ name: "", phone: "", guests: "1", date: "Mar 7", message: "" });
+    } catch (err) {
       setRsvpStatus("error");
     }
   };
@@ -284,15 +282,11 @@ html{scroll-behavior:smooth;overflow-x:hidden;}
 
 /* ============ RSVP inside hope section ============ */
 .rsvp-wrap{margin-top:36px;position:relative;z-index:1;}
-
 .rsvp-btn{display:inline-flex;align-items:center;gap:10px;background:linear-gradient(135deg,#ffd700,#bfa137);color:#0d0a06;font-family:'Cinzel',serif;font-size:13px;font-weight:600;letter-spacing:3px;padding:16px 42px;border-radius:50px;border:none;cursor:pointer;transition:transform 0.2s ease,box-shadow 0.2s ease;box-shadow:0 0 30px rgba(255,215,0,0.2);}
 .rsvp-btn:hover{transform:scale(1.05);box-shadow:0 0 50px rgba(255,215,0,0.4);}
-
 .rsvp-form-wrap{max-height:0;overflow:hidden;transition:max-height 0.9s ease,opacity 0.5s ease;opacity:0;}
 .rsvp-form-wrap.open{max-height:1100px;opacity:1;}
-
 .rsvp-form{background:rgba(255,255,255,0.04);border:1px solid rgba(255,215,0,0.12);border-radius:24px;padding:40px 36px;max-width:520px;margin:32px auto 0;text-align:left;}
-
 .rsvp-row{margin-bottom:20px;}
 .rsvp-row label{display:block;font-family:'Cinzel',serif;font-size:10px;letter-spacing:2.5px;color:#bfa137;text-transform:uppercase;margin-bottom:8px;}
 .rsvp-row input,.rsvp-row select,.rsvp-row textarea{width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,215,0,0.18);border-radius:10px;padding:12px 16px;color:#fff;font-family:'Playfair Display',serif;font-size:14px;outline:none;transition:border-color 0.3s ease;}
@@ -300,13 +294,10 @@ html{scroll-behavior:smooth;overflow-x:hidden;}
 .rsvp-row input::placeholder,.rsvp-row textarea::placeholder{color:rgba(255,255,255,0.28);}
 .rsvp-row select option{background:#1a1209;color:#fff;}
 .rsvp-row textarea{resize:vertical;min-height:80px;}
-
 .rsvp-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;}
-
 .rsvp-submit{width:100%;background:linear-gradient(135deg,#ffd700,#bfa137);color:#0d0a06;font-family:'Cinzel',serif;font-size:12px;font-weight:600;letter-spacing:3px;padding:16px;border-radius:12px;border:none;cursor:pointer;margin-top:8px;transition:transform 0.2s ease,opacity 0.2s ease;}
 .rsvp-submit:hover{transform:scale(1.02);}
 .rsvp-submit:disabled{opacity:0.45;cursor:not-allowed;transform:none;}
-
 .rsvp-success{text-align:center;padding:20px 0;}
 .rsvp-success h3{font-family:'Great Vibes',cursive;font-size:clamp(30px,5vw,48px);color:#ffd700;margin:0 0 12px 0;}
 .rsvp-success p{font-family:'Playfair Display',serif;font-size:15px;color:#9a8a6a;margin:0 0 24px 0;}
@@ -472,7 +463,7 @@ html{scroll-behavior:smooth;overflow-x:hidden;}
                       <div className="et-num">Event {ev.num}</div>
                       <div className="et-title">{ev.title}</div>
                       <div className="et-datetime"><strong>{ev.date}</strong>{ev.time}</div>
-                      <div className="et-location">{ev.location.split("\n").map((l,j)=><span key={j}>{l}<br/></span>)}</div>
+                      <div className="et-location">{ev.location.split("\n").map((l, j) => <span key={j}>{l}<br /></span>)}</div>
                       <a className="et-map-btn" href={ev.maps} target="_blank" rel="noopener noreferrer">
                         <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5S10.62 6.5 12 6.5s2.5 1.12 2.5 2.5S13.38 11.5 12 11.5z"/></svg>
                         Open in Maps
@@ -485,7 +476,7 @@ html{scroll-behavior:smooth;overflow-x:hidden;}
                       <div className="et-num">Event {ev.num}</div>
                       <div className="et-title">{ev.title}</div>
                       <div className="et-datetime"><strong>{ev.date}</strong>{ev.time}</div>
-                      <div className="et-location">{ev.location.split("\n").map((l,j)=><span key={j}>{l}<br/></span>)}</div>
+                      <div className="et-location">{ev.location.split("\n").map((l, j) => <span key={j}>{l}<br /></span>)}</div>
                       <a className="et-map-btn" href={ev.maps} target="_blank" rel="noopener noreferrer">
                         <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5S10.62 6.5 12 6.5s2.5 1.12 2.5 2.5S13.38 11.5 12 11.5z"/></svg>
                         Open in Maps
@@ -504,7 +495,7 @@ html{scroll-behavior:smooth;overflow-x:hidden;}
               <div className="hope-divider"></div>
               <p className="hope-sub">Anvesh Kumar Reddy &amp; Poojitha · Mar 7, 2026</p>
 
-              {/* RSVP inside hope section */}
+              {/* RSVP button + form inside hope section */}
               <div className="rsvp-wrap">
                 <button className="rsvp-btn" onClick={() => { setRsvpOpen(!rsvpOpen); setRsvpStatus("idle"); }}>
                   {rsvpOpen ? "✕  Close" : "✉  RSVP Now"}
@@ -523,33 +514,33 @@ html{scroll-behavior:smooth;overflow-x:hidden;}
                         <div className="rsvp-row">
                           <label>Your Full Name *</label>
                           <input type="text" placeholder="Enter your name" value={rsvpForm.name}
-                            onChange={e => setRsvpForm({...rsvpForm, name: e.target.value})} />
+                            onChange={e => setRsvpForm({ ...rsvpForm, name: e.target.value })} />
                         </div>
                         <div className="rsvp-row">
                           <label>Phone Number *</label>
                           <input type="tel" placeholder="Enter your phone number" value={rsvpForm.phone}
-                            onChange={e => setRsvpForm({...rsvpForm, phone: e.target.value})} />
+                            onChange={e => setRsvpForm({ ...rsvpForm, phone: e.target.value })} />
                         </div>
                         <div className="rsvp-grid">
-                          <div className="rsvp-row" style={{marginBottom:0}}>
+                          <div className="rsvp-row" style={{ marginBottom: 0 }}>
                             <label>No. of Guests</label>
-                            <select value={rsvpForm.guests} onChange={e => setRsvpForm({...rsvpForm, guests: e.target.value})}>
-                              {["1","2","3","4","5","6+"].map(n => <option key={n} value={n}>{n}</option>)}
+                            <select value={rsvpForm.guests} onChange={e => setRsvpForm({ ...rsvpForm, guests: e.target.value })}>
+                              {["1", "2", "3", "4", "5", "6+"].map(n => <option key={n} value={n}>{n}</option>)}
                             </select>
                           </div>
-                          <div className="rsvp-row" style={{marginBottom:0}}>
+                          <div className="rsvp-row" style={{ marginBottom: 0 }}>
                             <label>Which Day?</label>
-                            <select value={rsvpForm.date} onChange={e => setRsvpForm({...rsvpForm, date: e.target.value})}>
-                              <option value="Mar 6">Mar 6 — Haldi & Sangeet</option>
+                            <select value={rsvpForm.date} onChange={e => setRsvpForm({ ...rsvpForm, date: e.target.value })}>
+                              <option value="Mar 6">Mar 6 — Haldi &amp; Sangeet</option>
                               <option value="Mar 7">Mar 7 — Wedding</option>
                               <option value="Both">Both Days</option>
                             </select>
                           </div>
                         </div>
-                        <div className="rsvp-row" style={{marginTop:"20px"}}>
+                        <div className="rsvp-row" style={{ marginTop: "20px" }}>
                           <label>Message for the Couple (optional)</label>
                           <textarea placeholder="Write your wishes here..." value={rsvpForm.message}
-                            onChange={e => setRsvpForm({...rsvpForm, message: e.target.value})} />
+                            onChange={e => setRsvpForm({ ...rsvpForm, message: e.target.value })} />
                         </div>
                         <button className="rsvp-submit"
                           disabled={rsvpStatus === "submitting" || !rsvpForm.name.trim() || !rsvpForm.phone.trim()}
