@@ -427,10 +427,10 @@ html{scroll-behavior:smooth;overflow-x:hidden;}
             </div>
             <div className="et-list">
               {[
-                { num:"01", title:"Haldi Ceremony", date:"Friday, Mar 6, 2026", time:"10:00 AM onwards", location:"Alluru, Ongole\nAndhra Pradesh", maps:"https://maps.app.goo.gl/AHaUEUcfLuTDiqiL7" },
+                { num:"01", title:"Haldi Ceremony", date:"Friday, Mar 6, 2026", time:"8:00 AM onwards", location:"Alluru, Ongole\nAndhra Pradesh", maps:"https://maps.app.goo.gl/AHaUEUcfLuTDiqiL7" },
                 { num:"02", title:"Sangeet Night", date:"Friday, Mar 6, 2026", time:"7:00 PM onwards", location:"Alluru, Ongole\nAndhra Pradesh", maps:"https://maps.app.goo.gl/AHaUEUcfLuTDiqiL7" },
                 { num:"03", title:"Groom Ceremony", date:"Saturday, Mar 7, 2026", time:"9:00 AM onwards", location:"Alluru, Ongole\nAndhra Pradesh", maps:"https://maps.app.goo.gl/AHaUEUcfLuTDiqiL7" },
-                { num:"04", title:"Wedding Ceremony", date:"Saturday, Mar 7, 2026", time:"11:00 AM · Dinner at 8:00 PM", location:"S.G.V.S Convention, South By-pass\nOngole, Andhra Pradesh", maps:"https://maps.app.goo.gl/6C7codEY3K8jcvZc6" },
+                { num:"04", title:"Wedding Ceremony", date:"Saturday, Mar 7, 2026", time:"10:30 PM · Dinner at 8:00 PM", location:"S.G.V.S Convention, South By-pass\nOngole, Andhra Pradesh", maps:"https://maps.app.goo.gl/6C7codEY3K8jcvZc6" },
               ].map((ev, i) => (
                 <div key={i} className={`et-item${etItemsVisible[i] ? " visible" : ""}`}>
                   {i % 2 === 0 ? (
