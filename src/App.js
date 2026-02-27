@@ -151,7 +151,7 @@ export default function App() {
   const [rsvpStatus, setRsvpStatus] = useState("idle");
 
   // ⬇️ PASTE YOUR GOOGLE APPS SCRIPT WEB APP URL HERE
-  const SHEET_URL = "YOUR_GOOGLE_APPS_SCRIPT_URL_HERE";
+  const SHEET_URL = "https://script.google.com/macros/s/AKfycbyThiVe1UYOkAZJQbnjDAzCCj4rx7pIw8_O3dBSLhAz_1IdBg2YYi-29CudoZJZJsYC/exec";
 
   const handleRsvpSubmit = async () => {
     if (!rsvpForm.name.trim() || !rsvpForm.phone.trim()) return;
