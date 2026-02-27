@@ -1,10 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Volume2 } from "lucide-react";
 
 export default function App() {
-  const [showIntro, setShowIntro] = useState(true);
-  const [soundEnabled, setSoundEnabled] = useState(false);
-  const videoRef = useRef(null);
 
   /* ================= PETALS ================= */
   const petalsRef = useRef([]);
@@ -155,7 +151,7 @@ export default function App() {
   const [rsvpStatus, setRsvpStatus] = useState("idle");
 
   // ⬇️ PASTE YOUR GOOGLE APPS SCRIPT WEB APP URL HERE
-  const SHEET_URL = "https://script.google.com/macros/s/AKfycbyThiVe1UYOkAZJQbnjDAzCCj4rx7pIw8_O3dBSLhAz_1IdBg2YYi-29CudoZJZJsYC/exec";
+  const SHEET_URL = "YOUR_GOOGLE_APPS_SCRIPT_URL_HERE";
 
   const handleRsvpSubmit = async () => {
     if (!rsvpForm.name.trim() || !rsvpForm.phone.trim()) return;
@@ -185,11 +181,6 @@ html{scroll-behavior:smooth;overflow-x:hidden;}
 
 #petal-layer{position:fixed;inset:0;pointer-events:none;z-index:6;}
 .petal{width:12px;height:12px;position:absolute;background:radial-gradient(circle,#ffd700,#bfa137);border-radius:50% 0 50% 0;opacity:.9;}
-
-.video-intro{position:fixed;inset:0;z-index:9999;background:black;}
-.video-intro video{width:100%;height:100%;object-fit:cover;}
-.sound-overlay{position:absolute;inset:0;background:rgba(0,0,0,.45);display:flex;flex-direction:column;justify-content:center;align-items:center;color:white;cursor:pointer;padding:20px;text-align:center;}
-.sound-btn{margin-top:20px;border:2px solid gold;padding:14px 28px;border-radius:40px;display:flex;gap:10px;align-items:center;font-family:'Cinzel',serif;letter-spacing:2px;font-size:14px;}
 
 .hero{min-height:100vh;background:linear-gradient(rgba(0,0,0,.6),rgba(0,0,0,.9)),url('/royal-bg.png') center/cover no-repeat;display:flex;align-items:center;justify-content:center;padding:20px;text-align:center;position:relative;z-index:5;}
 .glass{backdrop-filter:blur(14px);background:rgba(0,0,0,.55);border:1px solid rgba(255,215,0,.3);border-radius:30px;padding:50px 40px;max-width:1000px;width:100%;text-align:center;color:white;}
@@ -354,8 +345,6 @@ html{scroll-behavior:smooth;overflow-x:hidden;}
   .rsvp-btn{font-size:11px;padding:14px 28px;letter-spacing:2px;}
   .rsvp-submit{font-size:11px;letter-spacing:2px;}
   .footer{padding:36px 5%;font-size:13px;}
-  .sound-overlay h2{font-size:18px;}
-  .sound-btn{font-size:12px;padding:12px 20px;}
 }
 
 @media(max-width:380px){
@@ -372,21 +361,7 @@ html{scroll-behavior:smooth;overflow-x:hidden;}
       <style>{styles}</style>
       <div id="petal-layer" ref={petalLayerRef}></div>
 
-      {showIntro && (
-        <div className="video-intro">
-          <video ref={videoRef} src="/wedding-intro2.mp4" autoPlay muted playsInline onEnded={() => setShowIntro(false)} />
-          {!soundEnabled && (
-            <div className="sound-overlay" onClick={() => { setSoundEnabled(true); videoRef.current.muted = false; videoRef.current.play(); }}>
-              <h2>Tap to Experience with Sound</h2>
-              <div className="sound-btn"><Volume2 /> ENABLE SOUND</div>
-            </div>
-          )}
-        </div>
-      )}
-
-      {!showIntro && (
-        <>
-          <section className="hero">
+      <section className="hero">
             <div className="glass">
               <p className="we">WE ARE GETTING MARRIED</p>
               <h1 className="names">Anvesh <br />& <br />Poojitha</h1>
@@ -428,7 +403,7 @@ html{scroll-behavior:smooth;overflow-x:hidden;}
                 <h2>Not Just an<br /><span>Ordinary Story</span></h2>
               </div>
               <div className={`story-text${storyVisible ? " visible" : ""}`}>
-                <p>What began as a simple conversation turned into a beautiful journey. Two hearts met, and destiny quietly wrote our forever.</p>
+                <p>What began as a simple conversation turned into a beautiful journey. Two hearts met, and destiny quietly wrote our forever. Somewhere between the small talks and shared smiles, we found something truly special. And before we knew it, our story became the one we always hoped for.</p>
               </div>
             </div>
           </section>
@@ -557,8 +532,6 @@ html{scroll-behavior:smooth;overflow-x:hidden;}
           </section>
 
           <div className="footer">With Love & Blessings ❤️</div>
-        </>
-      )}
     </>
   );
 }
