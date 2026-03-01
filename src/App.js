@@ -38,6 +38,8 @@ export default function App() {
 
   /* ================= COUNTDOWN ================= */
   const [timeLeft, setTimeLeft] = useState({});
+  const [countdownDone, setCountdownDone] = useState(false);
+
   useEffect(() => {
     const weddingDate = new Date("2026-03-07T18:00:00");
     const timer = setInterval(() => {
@@ -50,6 +52,9 @@ export default function App() {
           Minutes: Math.floor((diff / (1000 * 60)) % 60),
           Seconds: Math.floor((diff / 1000) % 60),
         });
+      } else {
+        setCountdownDone(true);
+        clearInterval(timer);
       }
     }, 1000);
     return () => clearInterval(timer);
@@ -187,10 +192,60 @@ html{scroll-behavior:smooth;overflow-x:hidden;}
 .we{letter-spacing:4px;color:#f5d58a;font-family:'Cinzel',serif;font-size:13px;margin-bottom:12px;}
 .names{font-family:'Dancing Script',cursive;font-size:clamp(2rem,6vw,4rem);font-weight:700;background:linear-gradient(45deg,#ffd700,#fff1b8,#ffd700);-webkit-background-clip:text;color:transparent;line-height:1.3;margin:10px 0;}
 .glass > p{font-size:14px;color:rgba(255,255,255,0.8);margin:8px 0 0;}
+
+/* COUNTDOWN */
 .countdown{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:30px;}
 .time{background:rgba(255,215,0,.12);border:1px solid rgba(255,215,0,.4);border-radius:18px;padding:14px 8px;}
 .time h1{margin:0;color:#ffd700;font-size:clamp(20px,4vw,32px);}
 .time p{margin:0;font-family:'Cinzel',serif;font-size:10px;letter-spacing:1px;}
+
+/* WATCH LIVE BUTTON */
+.watch-live-wrap {
+  margin-top:30px;
+  animation: fadeUp 0.8s ease forwards;
+}
+@keyframes fadeUp {
+  from { opacity:0; transform:translateY(20px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+.watch-live-label {
+  font-family:'Great Vibes',cursive;
+  font-size:clamp(18px,2.5vw,24px);
+  color:#bfa137;
+  display:block;
+  margin-bottom:16px;
+}
+.watch-live-btn {
+  display:inline-flex;
+  align-items:center;
+  gap:12px;
+  background:linear-gradient(135deg,#ff3b3b,#c0392b);
+  color:#fff;
+  font-family:'Cinzel',serif;
+  font-size:14px;
+  font-weight:600;
+  letter-spacing:3px;
+  padding:18px 48px;
+  border-radius:50px;
+  text-decoration:none;
+  box-shadow:0 0 40px rgba(255,60,60,0.35);
+  transition:transform 0.2s ease,box-shadow 0.2s ease;
+}
+.watch-live-btn:hover {
+  transform:scale(1.05);
+  box-shadow:0 0 60px rgba(255,60,60,0.55);
+}
+.live-dot {
+  width:10px;height:10px;
+  border-radius:50%;
+  background:#fff;
+  animation:pulse 1.2s infinite;
+  flex-shrink:0;
+}
+@keyframes pulse {
+  0%,100%{opacity:1;transform:scale(1);}
+  50%{opacity:0.4;transform:scale(1.4);}
+}
 
 #events{background:#f7f4ef;color:#111;padding:80px 6%;position:relative;z-index:5;}
 .events-grid{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;max-width:1200px;margin:0 auto;}
@@ -306,6 +361,7 @@ html{scroll-behavior:smooth;overflow-x:hidden;}
   .time{padding:12px 6px;border-radius:14px;}
   .time h1{font-size:24px;}
   .time p{font-size:9px;}
+  .watch-live-btn{font-size:12px;padding:14px 32px;letter-spacing:2px;}
   #events{padding:60px 5%;}
   .events-grid{grid-template-columns:1fr;gap:30px;}
   .events-text h2{font-size:22px;margin-bottom:28px;}
@@ -362,176 +418,192 @@ html{scroll-behavior:smooth;overflow-x:hidden;}
       <div id="petal-layer" ref={petalLayerRef}></div>
 
       <section className="hero">
-            <div className="glass">
-              <p className="we">WE ARE GETTING MARRIED</p>
-              <h1 className="names">Anvesh <br />& <br />Poojitha</h1>
-              <p>7 March 2026 · Ongole, Andhra Pradesh</p>
-              <div className="countdown">
-                {Object.entries(timeLeft).map(([k, v]) => (
-                  <div className="time" key={k}><h1>{v}</h1><p>{k}</p></div>
-                ))}
-              </div>
-            </div>
-          </section>
+        <div className="glass">
+          <p className="we">WE ARE GETTING MARRIED</p>
+          <h1 className="names">Anvesh <br />& <br />Poojitha</h1>
+          <p>7 March 2026 · Ongole, Andhra Pradesh</p>
 
-          <section id="events">
-            <div className="events-grid">
-              <div className="events-img"><img src="/wedding-photo2.jpeg" alt="wedding" /></div>
-              <div className="events-text">
-                <h2>{typed}</h2>
-                {showEvents && (
+          {/* Show countdown OR watch live button */}
+          {!countdownDone ? (
+            <div className="countdown">
+              {Object.entries(timeLeft).map(([k, v]) => (
+                <div className="time" key={k}><h1>{v}</h1><p>{k}</p></div>
+              ))}
+            </div>
+          ) : (
+            <div className="watch-live-wrap">
+              <span className="watch-live-label">The moment has arrived!</span>
+              <a
+                className="watch-live-btn"
+                href="https://youtube.com/live/YOUR_STREAM_ID"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <span className="live-dot"></span>
+                WATCH LIVE
+              </a>
+            </div>
+          )}
+        </div>
+      </section>
+
+      <section id="events">
+        <div className="events-grid">
+          <div className="events-img"><img src="/wedding-photo2.jpeg" alt="wedding" /></div>
+          <div className="events-text">
+            <h2>{typed}</h2>
+            {showEvents && (
+              <>
+                <div className="event-item">
+                  <div className="event-num">Wedding Ceremony</div>
+                  <div className="event-title">Saturday, Mar 7, 2026</div>
+                  <div className="event-desc">S.G.V.S Convention, South By-pass<br />Ongole, Andhra Pradesh</div>
+                </div>
+                <div className="event-item">
+                  <div className="event-num">Dinner</div>
+                  <div className="event-title">Saturday, Mar 7, 2026</div>
+                  <div className="event-desc">at 8:00 PM onwards</div>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      </section>
+
+      <section id="love-story">
+        <div className="story-grid">
+          <div className={`story-heading${storyVisible ? " visible" : ""}`}>
+            <h2>Not Just an<br /><span>Ordinary Story</span></h2>
+          </div>
+          <div className={`story-text${storyVisible ? " visible" : ""}`}>
+            <p>What began as a simple conversation turned into a beautiful journey. Two hearts met, and destiny quietly wrote our forever. Somewhere between the small talks and shared smiles, we found something truly special. And before we knew it, our story became the one we always hoped for.</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="quote-section">
+        <div className={`quote-inner${quoteVisible ? " visible" : ""}`}>
+          <blockquote>"To the world you are one person,<br />but to one person you are the world".</blockquote>
+          <cite>Anonymous</cite>
+        </div>
+      </section>
+
+      <div id="photo-fixed">
+        <img src="/wedding-photo.jpeg" alt="couple"
+          style={{ clipPath: `inset(${(1 - photoReveal) * 100}% 0% 0% 0%)`, filter: `brightness(${0.3 + photoReveal * 0.7})` }} />
+      </div>
+      <div id="photo-scroll-container" ref={photoContainerRef} />
+
+      <section id="events-timeline">
+        <div className={`et-header${etHeaderVisible ? " visible" : ""}`}>
+          <p>Join Us For</p><h2>Events & Location</h2>
+        </div>
+        <div className="et-list">
+          {[
+            { num:"01", title:"Groom Ceremony", date:"Saturday, Mar 6, 2026", time:"9:00 AM onwards", location:"Alluru, Ongole\nAndhra Pradesh", maps:"https://maps.app.goo.gl/AHaUEUcfLuTDiqiL7" },
+            { num:"02", title:"Sangeet Night", date:"Friday, Mar 6, 2026", time:"7:00 PM onwards", location:"Alluru, Ongole\nAndhra Pradesh", maps:"https://maps.app.goo.gl/AHaUEUcfLuTDiqiL7" },
+            { num:"03", title:"Haldi Ceremony", date:"Friday, Mar 7, 2026", time:"8:00 AM onwards", location:"Alluru, Ongole\nAndhra Pradesh", maps:"https://maps.app.goo.gl/AHaUEUcfLuTDiqiL7" },
+            { num:"04", title:"Wedding Ceremony", date:"Saturday, Mar 7, 2026", time:"10:30 AM · Dinner at 8:00 PM", location:"S.G.V.S Convention, South By-pass\nOngole, Andhra Pradesh", maps:"https://maps.app.goo.gl/6C7codEY3K8jcvZc6" },
+          ].map((ev, i) => (
+            <div key={i} className={`et-item${etItemsVisible[i] ? " visible" : ""}`}>
+              {i % 2 === 0 ? (
+                <div className="et-card">
+                  <div className="et-num">Event {ev.num}</div>
+                  <div className="et-title">{ev.title}</div>
+                  <div className="et-datetime"><strong>{ev.date}</strong>{ev.time}</div>
+                  <div className="et-location">{ev.location.split("\n").map((l, j) => <span key={j}>{l}<br /></span>)}</div>
+                  <a className="et-map-btn" href={ev.maps} target="_blank" rel="noopener noreferrer">
+                    <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5S10.62 6.5 12 6.5s2.5 1.12 2.5 2.5S13.38 11.5 12 11.5z"/></svg>
+                    Open in Maps
+                  </a>
+                </div>
+              ) : <div className="et-empty"></div>}
+              <div className="et-dot"><div className="et-dot-inner"></div></div>
+              {i % 2 !== 0 ? (
+                <div className="et-card">
+                  <div className="et-num">Event {ev.num}</div>
+                  <div className="et-title">{ev.title}</div>
+                  <div className="et-datetime"><strong>{ev.date}</strong>{ev.time}</div>
+                  <div className="et-location">{ev.location.split("\n").map((l, j) => <span key={j}>{l}<br /></span>)}</div>
+                  <a className="et-map-btn" href={ev.maps} target="_blank" rel="noopener noreferrer">
+                    <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5S10.62 6.5 12 6.5s2.5 1.12 2.5 2.5S13.38 11.5 12 11.5z"/></svg>
+                    Open in Maps
+                  </a>
+                </div>
+              ) : <div className="et-empty"></div>}
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section id="hope-section">
+        <div className={`hope-inner${hopeVisible ? " visible" : ""}`}>
+          <span className="hope-pre">With All Our Love</span>
+          <h2 className="hope-title">Hope to See You!</h2>
+          <div className="hope-divider"></div>
+          <p className="hope-sub">Anvesh Kumar Reddy &amp; Poojitha · Mar 7, 2026</p>
+
+          <div className="rsvp-wrap">
+            <button className="rsvp-btn" onClick={() => { setRsvpOpen(!rsvpOpen); setRsvpStatus("idle"); }}>
+              {rsvpOpen ? "✕  Close" : "✉  RSVP Now"}
+            </button>
+
+            <div className={`rsvp-form-wrap${rsvpOpen ? " open" : ""}`}>
+              <div className="rsvp-form">
+                {rsvpStatus === "success" ? (
+                  <div className="rsvp-success">
+                    <h3>See You There! 🎉</h3>
+                    <p>Thank you for your RSVP. We can't wait to celebrate with you!</p>
+                    <button className="rsvp-close-btn" onClick={() => { setRsvpStatus("idle"); setRsvpOpen(false); }}>Close</button>
+                  </div>
+                ) : (
                   <>
-                    <div className="event-item">
-                      <div className="event-num">Wedding Ceremony</div>
-                      <div className="event-title">Saturday, Mar 7, 2026</div>
-                      <div className="event-desc">S.G.V.S Convention, South By-pass<br />Ongole, Andhra Pradesh</div>
+                    <div className="rsvp-row">
+                      <label>Your Full Name *</label>
+                      <input type="text" placeholder="Enter your name" value={rsvpForm.name}
+                        onChange={e => setRsvpForm({ ...rsvpForm, name: e.target.value })} />
                     </div>
-                    <div className="event-item">
-                      <div className="event-num">Dinner</div>
-                      <div className="event-title">Saturday, Mar 7, 2026</div>
-                      <div className="event-desc">at 8:00 PM onwards</div>
+                    <div className="rsvp-row">
+                      <label>Phone Number *</label>
+                      <input type="tel" placeholder="Enter your phone number" value={rsvpForm.phone}
+                        onChange={e => setRsvpForm({ ...rsvpForm, phone: e.target.value })} />
                     </div>
+                    <div className="rsvp-grid">
+                      <div className="rsvp-row" style={{ marginBottom: 0 }}>
+                        <label>No. of Guests</label>
+                        <select value={rsvpForm.guests} onChange={e => setRsvpForm({ ...rsvpForm, guests: e.target.value })}>
+                          {["1", "2", "3", "4", "5", "6+"].map(n => <option key={n} value={n}>{n}</option>)}
+                        </select>
+                      </div>
+                      <div className="rsvp-row" style={{ marginBottom: 0 }}>
+                        <label>Which Day?</label>
+                        <select value={rsvpForm.date} onChange={e => setRsvpForm({ ...rsvpForm, date: e.target.value })}>
+                          <option value="Mar 6">Mar 6 — Haldi &amp; Sangeet</option>
+                          <option value="Mar 7">Mar 7 — Wedding</option>
+                          <option value="Both">Both Days</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div className="rsvp-row" style={{ marginTop: "20px" }}>
+                      <label>Message for the Couple (optional)</label>
+                      <textarea placeholder="Write your wishes here..." value={rsvpForm.message}
+                        onChange={e => setRsvpForm({ ...rsvpForm, message: e.target.value })} />
+                    </div>
+                    <button className="rsvp-submit"
+                      disabled={rsvpStatus === "submitting" || !rsvpForm.name.trim() || !rsvpForm.phone.trim()}
+                      onClick={handleRsvpSubmit}>
+                      {rsvpStatus === "submitting" ? "Sending..." : "CONFIRM RSVP"}
+                    </button>
+                    {rsvpStatus === "error" && <p className="rsvp-error">Something went wrong. Please try again.</p>}
                   </>
                 )}
               </div>
             </div>
-          </section>
-
-          <section id="love-story">
-            <div className="story-grid">
-              <div className={`story-heading${storyVisible ? " visible" : ""}`}>
-                <h2>Not Just an<br /><span>Ordinary Story</span></h2>
-              </div>
-              <div className={`story-text${storyVisible ? " visible" : ""}`}>
-                <p>What began as a simple conversation turned into a beautiful journey. Two hearts met, and destiny quietly wrote our forever. Somewhere between the small talks and shared smiles, we found something truly special. And before we knew it, our story became the one we always hoped for.</p>
-              </div>
-            </div>
-          </section>
-
-          <section id="quote-section">
-            <div className={`quote-inner${quoteVisible ? " visible" : ""}`}>
-              <blockquote>"To the world you are one person,<br />but to one person you are the world".</blockquote>
-              <cite>Anonymous</cite>
-            </div>
-          </section>
-
-          <div id="photo-fixed">
-            <img src="/wedding-photo.jpeg" alt="couple"
-              style={{ clipPath: `inset(${(1 - photoReveal) * 100}% 0% 0% 0%)`, filter: `brightness(${0.3 + photoReveal * 0.7})` }} />
           </div>
-          <div id="photo-scroll-container" ref={photoContainerRef} />
+        </div>
+      </section>
 
-          <section id="events-timeline">
-            <div className={`et-header${etHeaderVisible ? " visible" : ""}`}>
-              <p>Join Us For</p><h2>Events & Location</h2>
-            </div>
-            <div className="et-list">
-              {[
-                { num:"01", title:"Groom Ceremony", date:"Saturday, Mar 6, 2026", time:"9:00 AM onwards", location:"Alluru, Ongole\nAndhra Pradesh", maps:"https://maps.app.goo.gl/AHaUEUcfLuTDiqiL7" },
-                { num:"02", title:"Sangeet Night", date:"Friday, Mar 6, 2026", time:"7:00 PM onwards", location:"Alluru, Ongole\nAndhra Pradesh", maps:"https://maps.app.goo.gl/AHaUEUcfLuTDiqiL7" },
-                { num:"03", title:"Haldi Ceremony", date:"Friday, Mar 7, 2026", time:"8:00 AM onwards", location:"Alluru, Ongole\nAndhra Pradesh", maps:"https://maps.app.goo.gl/AHaUEUcfLuTDiqiL7" },
-                { num:"04", title:"Wedding Ceremony", date:"Saturday, Mar 7, 2026", time:"10:30 PM · Dinner at 8:00 PM", location:"S.G.V.S Convention, South By-pass\nOngole, Andhra Pradesh", maps:"https://maps.app.goo.gl/6C7codEY3K8jcvZc6" },
-              ].map((ev, i) => (
-                <div key={i} className={`et-item${etItemsVisible[i] ? " visible" : ""}`}>
-                  {i % 2 === 0 ? (
-                    <div className="et-card">
-                      <div className="et-num">Event {ev.num}</div>
-                      <div className="et-title">{ev.title}</div>
-                      <div className="et-datetime"><strong>{ev.date}</strong>{ev.time}</div>
-                      <div className="et-location">{ev.location.split("\n").map((l, j) => <span key={j}>{l}<br /></span>)}</div>
-                      <a className="et-map-btn" href={ev.maps} target="_blank" rel="noopener noreferrer">
-                        <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5S10.62 6.5 12 6.5s2.5 1.12 2.5 2.5S13.38 11.5 12 11.5z"/></svg>
-                        Open in Maps
-                      </a>
-                    </div>
-                  ) : <div className="et-empty"></div>}
-                  <div className="et-dot"><div className="et-dot-inner"></div></div>
-                  {i % 2 !== 0 ? (
-                    <div className="et-card">
-                      <div className="et-num">Event {ev.num}</div>
-                      <div className="et-title">{ev.title}</div>
-                      <div className="et-datetime"><strong>{ev.date}</strong>{ev.time}</div>
-                      <div className="et-location">{ev.location.split("\n").map((l, j) => <span key={j}>{l}<br /></span>)}</div>
-                      <a className="et-map-btn" href={ev.maps} target="_blank" rel="noopener noreferrer">
-                        <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5S10.62 6.5 12 6.5s2.5 1.12 2.5 2.5S13.38 11.5 12 11.5z"/></svg>
-                        Open in Maps
-                      </a>
-                    </div>
-                  ) : <div className="et-empty"></div>}
-                </div>
-              ))}
-            </div>
-          </section>
-
-          <section id="hope-section">
-            <div className={`hope-inner${hopeVisible ? " visible" : ""}`}>
-              <span className="hope-pre">With All Our Love</span>
-              <h2 className="hope-title">Hope to See You!</h2>
-              <div className="hope-divider"></div>
-              <p className="hope-sub">Anvesh Kumar Reddy &amp; Poojitha · Mar 7, 2026</p>
-
-              {/* RSVP button + form inside hope section */}
-              <div className="rsvp-wrap">
-                <button className="rsvp-btn" onClick={() => { setRsvpOpen(!rsvpOpen); setRsvpStatus("idle"); }}>
-                  {rsvpOpen ? "✕  Close" : "✉  RSVP Now"}
-                </button>
-
-                <div className={`rsvp-form-wrap${rsvpOpen ? " open" : ""}`}>
-                  <div className="rsvp-form">
-                    {rsvpStatus === "success" ? (
-                      <div className="rsvp-success">
-                        <h3>See You There! 🎉</h3>
-                        <p>Thank you for your RSVP. We can't wait to celebrate with you!</p>
-                        <button className="rsvp-close-btn" onClick={() => { setRsvpStatus("idle"); setRsvpOpen(false); }}>Close</button>
-                      </div>
-                    ) : (
-                      <>
-                        <div className="rsvp-row">
-                          <label>Your Full Name *</label>
-                          <input type="text" placeholder="Enter your name" value={rsvpForm.name}
-                            onChange={e => setRsvpForm({ ...rsvpForm, name: e.target.value })} />
-                        </div>
-                        <div className="rsvp-row">
-                          <label>Phone Number *</label>
-                          <input type="tel" placeholder="Enter your phone number" value={rsvpForm.phone}
-                            onChange={e => setRsvpForm({ ...rsvpForm, phone: e.target.value })} />
-                        </div>
-                        <div className="rsvp-grid">
-                          <div className="rsvp-row" style={{ marginBottom: 0 }}>
-                            <label>No. of Guests</label>
-                            <select value={rsvpForm.guests} onChange={e => setRsvpForm({ ...rsvpForm, guests: e.target.value })}>
-                              {["1", "2", "3", "4", "5", "6+"].map(n => <option key={n} value={n}>{n}</option>)}
-                            </select>
-                          </div>
-                          <div className="rsvp-row" style={{ marginBottom: 0 }}>
-                            <label>Which Day?</label>
-                            <select value={rsvpForm.date} onChange={e => setRsvpForm({ ...rsvpForm, date: e.target.value })}>
-                              <option value="Mar 6">Mar 6 — Haldi &amp; Sangeet</option>
-                              <option value="Mar 7">Mar 7 — Wedding</option>
-                              <option value="Both">Both Days</option>
-                            </select>
-                          </div>
-                        </div>
-                        <div className="rsvp-row" style={{ marginTop: "20px" }}>
-                          <label>Message for the Couple (optional)</label>
-                          <textarea placeholder="Write your wishes here..." value={rsvpForm.message}
-                            onChange={e => setRsvpForm({ ...rsvpForm, message: e.target.value })} />
-                        </div>
-                        <button className="rsvp-submit"
-                          disabled={rsvpStatus === "submitting" || !rsvpForm.name.trim() || !rsvpForm.phone.trim()}
-                          onClick={handleRsvpSubmit}>
-                          {rsvpStatus === "submitting" ? "Sending..." : "CONFIRM RSVP"}
-                        </button>
-                        {rsvpStatus === "error" && <p className="rsvp-error">Something went wrong. Please try again.</p>}
-                      </>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          <div className="footer">With Love & Blessings ❤️</div>
+      <div className="footer">With Love & Blessings ❤️</div>
     </>
   );
 }
