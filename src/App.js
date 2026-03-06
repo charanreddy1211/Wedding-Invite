@@ -41,7 +41,7 @@ export default function App() {
   const [countdownDone, setCountdownDone] = useState(false);
 
   useEffect(() => {
-    const weddingDate = new Date("2026-03-06T19:06:00");
+    const weddingDate = new Date("2026-03-07T19:00:00");
     const timer = setInterval(() => {
       const now = new Date();
       const diff = weddingDate - now;
