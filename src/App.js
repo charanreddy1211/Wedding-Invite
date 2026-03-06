@@ -41,7 +41,7 @@ export default function App() {
   const [countdownDone, setCountdownDone] = useState(false);
 
   useEffect(() => {
-    const weddingDate = new Date("2026-03-07T18:00:00");
+    const weddingDate = new Date("2026-03-06T19:06:00");
     const timer = setInterval(() => {
       const now = new Date();
       const diff = weddingDate - now;
@@ -435,7 +435,7 @@ html{scroll-behavior:smooth;overflow-x:hidden;}
               <span className="watch-live-label">The moment has arrived!</span>
               <a
                 className="watch-live-btn"
-                href="https://youtube.com/live/YOUR_STREAM_ID"
+                href="https://youtube.com/live/Jwmd1OzlfwM?feature=share"
                 target="_blank"
                 rel="noopener noreferrer"
               >
